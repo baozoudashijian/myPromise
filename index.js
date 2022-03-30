@@ -40,6 +40,14 @@ myDeferred.prototype.reject = function(obj) {
     }
 }
 
-function asyncDoSomething() {
-    
+// 异步代码
+function asyncDoSomething(flag, message) {
+    setTimeout(function() {
+        if(flag) {
+            console.log(message)
+            return message
+        }
+    }, 3000)
 }
+
+asyncDoSomething(1, 'TD-King')
