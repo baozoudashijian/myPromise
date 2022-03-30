@@ -42,12 +42,23 @@ myDeferred.prototype.reject = function(obj) {
 
 // 异步代码
 function asyncDoSomething(flag, message) {
+    var deferred = new myDeferred()
     setTimeout(function() {
         if(flag) {
-            console.log(message)
-            return message
+            deferred.resolve({code: '200', message: message})
+        } else {
+            deferred.reject({code: '400', message: '拒绝'})
         }
     }, 3000)
+
+    return deferred.promise
 }
 
-asyncDoSomething(1, 'TD-King')
+
+// asyncDoSomething(1, 'TD-King') > return deferred.promise 【这一部分代码返回myPromise对象】
+
+asyncDoSomething(1, 'TD-King').then((data) => {
+    console.log(data)
+}, (err) => {
+    console.log(err)
+})
