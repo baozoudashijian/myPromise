@@ -47,7 +47,6 @@ function asyncDoSomething(flag, message) {
     var deferred = new myDeferred((resolve, reject) => {
         setTimeout(function() {
             if(flag) {
-                console.log(resolve.toString(), '11111')
                 resolve({code: '200', message: message})
             } else {
                 reject({code: '400', message: '拒绝'})
