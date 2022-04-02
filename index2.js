@@ -1,4 +1,8 @@
-
+/**
+*
+* 自己封装的promise存在的问题
+*
+* */
 function myPromise() {
   this.state = "pendding"
   this.handler = {}
