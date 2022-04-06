@@ -16,6 +16,15 @@ myPromise.prototype.then = function(onFulfilled, onRejected) {
   return this
 }
 
+myPromise.prototype.catch = function(onRejected) {
+  var handler = {}
+  if(typeof onRejected === 'function') {
+    handler.reject = onRejected
+  }
+  this.handlerQueue.push(handler)
+  return this
+}
+
 function myDeferred() {
   this.state = 'pending'
   this.promise = new myPromise()
@@ -71,8 +80,13 @@ function asyncDosomething(flag) {
   return deferred.promise
 }
 
+// then按顺序添加，reslove按顺序执行
 asyncDosomething(1).then((res) => {
-  console.log(res)
+  console.log(res, 1)
   return asyncDosomething(0)
-}).then()
+}).then((res) => {
+  console.log(res, 2)
+}).catch((err) => {
+  console.log(err, 3)
+})
 
