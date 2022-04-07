@@ -1,3 +1,5 @@
+var fs = require('fs')
+
 function myPromise() {
   this.handlerQueue = []
   this.isPromise = true
@@ -58,18 +60,33 @@ myDeferred.prototype.reject = function (obj) {
   }
 }
 
-function asyncDosomething(flag) {
-  const deferred = new myDeferred()
-  setTimeout(() => {
-    if(flag) {
-      deferred.resolve({code: '200', message: '调用成功!'})
+myDeferred.prototype.callback = function() {
+  return (err, result) => {
+    if(err) {
+      this.reject(err)
     }else{
-      deferred.reject({code: '404', message: '调用失败!'})
+      this.resolve(result)
     }
-  }, 3000)
-  return deferred.promise
+  }
 }
 
-asyncDosomething(1).then((res) => {
+var promisify = function(method) {
+  if(typeof method !== 'function') {
+    throw new TypeError('is not a function')
+  }
+  return function() {
+    const deferred = new myDeferred()
+    var args = Array.prototype.slice.call(arguments, 0)
+    args.push(deferred.callback())
+    method.apply(this, args) // 异步代码
+    return deferred.promise
+  }
+}
+
+var readFile = promisify(fs.readFile);
+readFile('index.js').then((res) => {
+  console.log(res)
+  return readFile('index2.js')
+}).then((res) => {
   console.log(res)
 })
